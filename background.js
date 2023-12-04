@@ -1,15 +1,11 @@
-// event to run execute.js content when extension's button is clicked
-chrome.action.onClicked.addListener(execScript);
+chrome.tabs.onUpdated.addListener((tabId, tab) => {
+  if (tab.url && /instagram\.com\/.*\/followers/.test(tab.url)){
+    const username = tab.url.split('/')[1]
+    console.log(username)
 
-async function execScript() {
-  const tabId = await getTabId();
-  chrome.scripting.executeScript({
-    target: {tabId: tabId},
-    files: ['execute.js']
-  })
-}
-
-async function getTabId() {
-  const tabs = await chrome.tabs.query({active: true, currentWindow: true});
-  return (tabs.length > 0) ? tabs[0].id : null;
-}
+    chrome.tabs.sendMessage(tabId, {
+      type: 'followers',
+      username: username
+    })
+  }
+})
