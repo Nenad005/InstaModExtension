@@ -4,12 +4,11 @@
     scrollToBottom("_aano", username)
   }
 
-  function saveUsernames(username, usernames){
-    // const username_elements = document.getElementsByClassName('_ap3a _aaco _aacw _aacx _aad7 _aade')
-    // let usernames = Array.from(username_elements).map((element) => {
-    //   return element.innerHTML
-    // })
+  function AddAccount(username){
+    alert(username)
+  }
 
+  function saveUsernames(username, usernames){
     chrome.storage.local.set({ [username]: usernames }).then(() => {
       console.log("Saved usernames locally !!!");
     });
@@ -71,19 +70,29 @@
 
   chrome.runtime.onMessage.addListener((obj, sender, response) => {
     const {type, username} = obj
+    alert(username)
     if (type == 'followers'){
       setTimeout(() => {
-        let icon = document.createElement("i")
-        icon.className = 'fas fa-download'
-        icon.style = 'margin-left: 20px; font-size: 18px;'
-        icon.style.cursor = 'pointer'
-        // icon.onclick = onIconClick
-        icon.addEventListener('click', () => {
+        let SaveIcon = document.createElement("i")
+        SaveIcon.className = 'fas fa-download'
+        SaveIcon.style = 'margin-left: 20px; font-size: 18px;'
+        SaveIcon.style.cursor = 'pointer'
+        SaveIcon.addEventListener('click', () => {
           onIconClick(username)
         })
 
+        let AddIcon = document.createElement("i")
+        AddIcon.className = 'fas fa-plus'
+        AddIcon.style = 'margin-left: 20px; font-size: 18px;'
+        AddIcon.style.cursor = 'pointer'
+        AddIcon.addEventListener('click', () => {
+          AddAccount(username)
+        })
+
         let icon_div = document.getElementsByClassName('_ac7b _ac7c')
-        icon_div[0].appendChild(icon)
+        icon_div[0].style.flexDirection = 'row'
+        icon_div[0].appendChild(SaveIcon)
+        icon_div[0].appendChild(AddIcon)
         console.log(icon_div[0])
       }, 500)
     }

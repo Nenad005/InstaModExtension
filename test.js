@@ -6,10 +6,11 @@ const actions = {
 }
 
 const restTime = {
-    pocetak: 2,
+    pocetak: 1,
     kraj : 14,
 }
 const maxActionsPerDay = 150
+const maxActionsPerHour = 30
 
 function follow(){console.log('Followed')}
 function unfollow(){console.log('Unfollowed')}
@@ -74,13 +75,65 @@ function timeUntilRestEnd(){
 
     return timeDifference;
 }
+const fs = require('fs');
+
+function writeToFile(filePath, data) {
+    fs.writeFile(filePath, JSON.stringify(data), (err) => {
+      if (err) {
+        console.error('Error writing to file:', err);
+      } else {
+        console.log('Task times written to file:', filePath);
+      }
+    });
+  }
+
+function calculate_actions(){
+    const time_left = timeUntilRest()
+    let base_action_time = (time_left < (maxActionsPerDay/maxActionsPerHour) * 60) ? 2 : time_left / ( maxActionsPerDay * 2 );
+    let max_actions = Math.floor(time_left / base_action_time)
+    let curr_time = new Date()
+    let action_biases = split_number(max_actions, 5)
+    let actions = []
+    let follows = 0;
+    let likes= 0;
+    for (let i = 0; i < action_biases.length; i++){
+        let type = randInt(1) == 1 ? 'follow' : 'like'
+        actions.push({
+            bias: action_biases[i],
+            time: curr_time.toISOString(),
+            type: type
+        })
+        if (type == 'follow') follows += action_biases[i] 
+        else likes += action_biases[i]
+        curr_time = new Date(curr_time.getTime() + base_action_time * action_biases[i] * 60000)
+        console.log(typeof(curr_time))
+    }
+
+    console.log(base_action_time, max_actions)
+    console.log(follows, likes)
+    writeToFile('task_times.json', actions)
+}
+
+function split_number(n, b){
+    let res = []
+    if (n <= b) {
+        res.push(n)
+        return res
+    }
+    while (n > 0){
+        let rn = Math.min(n, Math.abs(b + randInt(-3, 3)))
+        res.push(rn)
+        n -= rn
+    }
+    return res;
+}
+
 
 function initialize(){
-    // a = randInt(2, 0)
-    // console.log(a)
-    // perform_action(a)
     console.log(timeUntilRest())
     console.log(timeUntilRestEnd())
+    console.log(split_number(28, 5))
+    calculate_actions()
 }
 
 
