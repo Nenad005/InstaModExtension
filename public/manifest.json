@@ -1,0 +1,44 @@
+{
+  "name": "InstaMod",
+  "description": "Instagram extension :)",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": [ "tabs", "scripting", "storage", "unlimitedStorage" ],
+  "host_permissions": [ "https://*.instagram.com/*", "http://*.instagram.com/*" ],
+  "action": {
+    "default_title": "execute.js will run (watch the Chrome DevTools' console)",
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "64": "assets/icons/icon64.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.instagram.com/*", "http://*.instagram.com/*"],
+      "js": ["contentScript.js"],
+      "css": [
+        "css/fontawesome.min.css",
+        "css/regular.min.css",
+        "css/solid.min.css"
+      ]
+    }
+  ],
+  "icons":{
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "64": "assets/icons/icon64.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources" : ["css/fontawesome.min.css", "css/regular.min.css", "css/solid.min.css", "webfonts/fa-regular-400.woff2", "webfonts/fa-solid-900.woff2"],
+      "matches": ["https://*.instagram.com/*", "http://*.instagram.com/*"]
+    }
+  ]
+}
